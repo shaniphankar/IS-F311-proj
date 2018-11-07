@@ -2,4 +2,4 @@
 References:
 https://dl.acm.org/citation.cfm?id=507101
 
-g++ base.cpp glRoutines.cpp -lGL -lGLU -lglut -lGLEW
+g++ base.cpp -lGL -lGLU -lglut -lGLEW
