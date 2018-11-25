@@ -99,10 +99,13 @@ void drawSquare()
 	// glActiveTexture(GL_TEXTURE0);
 	// glEnable(GL_TEXTURE_2D);
 	// int texture_location = glGetUniformLocation
-	glBegin(GL_QUADS);
+	glBegin(GL_TRIANGLES);
 	glColor3f(0.196, 0.6, 0.8);
 	glVertex3f(1.0f,1.0f,0.0f);
+	glVertex3f(-1.0f,-1.0f,0.0f);
 	glVertex3f(-1.0f,1.0f,0.0f);
+	glColor3f(0.196, 0.6, 0.8);
+	glVertex3f(1.0f,1.0f,0.0f);
 	glVertex3f(-1.0f,-1.0f,0.0f);
 	glVertex3f(1.0f,-1.0f,0.0f);
 	glEnd();
@@ -131,7 +134,7 @@ void myDisplay(void) {
 	glLoadIdentity();
 	gluLookAt(cameraPos[0],cameraPos[1],cameraPos[2],cameraPos[0]+directionSight[0],cameraPos[1]+directionSight[1],cameraPos[2]+directionSight[2],upVec[0],upVec[1],upVec[2]);
 	// drawSquare();
-	drawTeapot();
+	drawSquare();
 	glutSwapBuffers();
 }
 
@@ -142,9 +145,7 @@ void myinit()
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	texture= loadTexture("colour_map.raw",256,256);
-	normal_texture=loadTexture("normal_map.raw",256,256);
-}
+	}
 
 void update(int data)
 {
