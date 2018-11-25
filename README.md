@@ -4,4 +4,4 @@ https://dl.acm.org/citation.cfm?id=507101
 
 After sudo apt-get install libsoil-dev
 
-g++ base.cpp -lGL -lGLU -lglut -lGLEW -lSOIL
+g++ base.cpp shader.cpp -lGLEW -lGL -lGLU -lglut -lSOIL
