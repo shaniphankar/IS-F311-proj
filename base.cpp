@@ -19,37 +19,6 @@ glm::dvec3 directionSight=glm::dvec3(0.0f,0.0f,-1.0f);
 glm::dvec3 upVec=glm::dvec3(0.0f,1.0f,0.0f);
 //*! This function draws an empty Brown Cube which was the original prototype for our classroom*/
 
-unsigned int texture;
-unsigned int normal_texture;
-
-unsigned int loadTexture(const char *filename,int width,int height)
-{
-	unsigned int textureTemp;
-	unsigned char *data;
-	FILE* file;
-	file= fopen(filename, "rb");
-	if(file== NULL)
-		return 0;
-	data= (unsigned char *)malloc(width*height*3);
-	fread(data,width*height*3,1,file);
-	fclose(file);
-	glGenTextures(1,&textureTemp);
-	glBindTexture(GL_TEXTURE_2D,textureTemp);
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB,width,height,0,GL_RGB,GL_UNSIGNED_BYTE,data);
-	free(data);
-	return textureTemp;
-}
-
-void freeTexture(unsigned int texture)
-{
-	glDeleteTextures(1,&texture);
-}
-
 void drawEmptyClass()
 {
 	glBegin(GL_QUADS);
@@ -142,7 +111,7 @@ void drawSquare()
 void drawTeapot()
 {
 	glColor3f(0.196, 0.6, 0.8);
-	glutSolidTeapot(1);
+	glutWireTeapot(1);
 }
 void changeSize(int w, int h) 
 {
