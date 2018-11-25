@@ -7,6 +7,10 @@
 #include <vector>
 #include <string>
 using namespace std;
+//! The angle specifies the amount with which we are rotating along x-axis about up axis 
+double rotate_x=0.0f;
+//! The angle specifies the amount with which we are rotating along y-axis about up axis
+double rotate_y=0.0f;
 //! The angle specifies the magnitude to which we are looking up or down. Calculated w.r.t x-axis 
 double pitch=0.0f;
 //! The angle specifies the magnitude to which we are looking left or right. Calculated w.r.t y-axis 
@@ -155,9 +159,13 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	gluLookAt(cameraPos[0],cameraPos[1],cameraPos[2],cameraPos[0]+directionSight[0],cameraPos[1]+directionSight[1],cameraPos[2]+directionSight[2],upVec[0],upVec[1],upVec[2]);
+	glRotatef(rotate_x,0.0f,1.0f,0.0f);
+	glRotatef(rotate_y,1.0f,0.0f,0.0f);
 	shader.bind();
 	drawSquare2D();
 	shader.unbind();
+	glRotatef(-1*rotate_x,1.0f,0.0f,0.0f);
+	glRotatef(-1*rotate_y,0.0f,1.0f,0.0f);
 	glutSwapBuffers();
 }
 
@@ -182,8 +190,8 @@ void update(int data)
 
 void processNormalKeys(unsigned char key, int x,int y)
 {
-	double sensitivityX=1.5f;
-	double sensitivityY=.15f;
+	double sensitivityX=3.0f;
+	double sensitivityY=3.0f;
 	// double sensitivityFOV=1.0f;
 	if(key==27)
 	{
@@ -191,33 +199,37 @@ void processNormalKeys(unsigned char key, int x,int y)
 	}
 	if(key=='W'||key=='w')
 	{
-		pitch+=sensitivityY;
+		pitch+=sensitivityY/2;
 	}
 	if(key=='A'||key=='a')
 	{
-		yaw-=sensitivityX;
+		yaw-=sensitivityX/2;
 	}
 	if(key=='S'||key=='s')
 	{
-		pitch-=sensitivityY;
+		pitch-=sensitivityY/2;
 	}
 	if(key=='D'||key=='d')
 	{
-		yaw+=sensitivityX;
+		yaw+=sensitivityX/2;
 	}
-	// if(key=='+')
-	// {
-	// 	fov+=sensitivityFOV;
-	// }
-	// if(key=='-')
-	// {
-	// 	fov-=sensitivityFOV;
-	// }
-	// if(fov<=1.0f)
-	// 	fov=1.0f;
-	// if(fov>=90.0f)
-	// 	fov=90.0f;
-    if(pitch > 179.0f)
+	if(key=='I'||key=='i')
+	{
+		rotate_y+=sensitivityY;
+	}
+	if(key=='J'||key=='j')
+	{
+		rotate_x-=sensitivityX;
+	}
+	if(key=='K'||key=='k')
+	{
+		rotate_y-=sensitivityY;
+	}
+	if(key=='L'||key=='l')
+	{
+		rotate_x+=sensitivityX;
+	}
+	if(pitch > 179.0f)
         pitch = 179.0f;
     if(pitch < -179.0f)
         pitch = -179.0f;
