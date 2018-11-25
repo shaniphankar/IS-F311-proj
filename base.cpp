@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
+#include "SOIL.h"
 #include <vector>
 #include <string>
 using namespace std;
@@ -18,81 +19,6 @@ glm::dvec3 directionSight=glm::dvec3(0.0f,0.0f,-1.0f);
 //! 3D vector that contains the direction that defines what direction is UP
 glm::dvec3 upVec=glm::dvec3(0.0f,1.0f,0.0f);
 //*! This function draws an empty Brown Cube which was the original prototype for our classroom*/
-
-void drawEmptyClass()
-{
-	glBegin(GL_QUADS);
-	// glColor3f(0.5f,0.35f,0.05f);//TOP
-	// glVertex3f(1.0f,1.0f,-1.0f);
-	// glVertex3f(-1.0f,1.0f,-1.0f);
-	// glVertex3f(-1.0f,1.0f,0.0f);
-	// glVertex3f(1.0f,1.0f,0.0f);
-	glColor3f(0.196, 0.6, 0.8);//BOTTOM
-	
-	glVertex3f(1.0f,-1.0f,-1.0f);
-	glVertex3f(-1.0f,-1.0f,-1.0f);
-	glVertex3f(-1.0f,-1.0f,0.0f);
-	glVertex3f(1.0f,-1.0f,0.0f);
-	// glColor3f(0.5f,0.35f,0.05f);//BACK
-	// glVertex3f(1.0f,1.0f,-1.0f);
-	// glVertex3f(-1.0f,1.0f,-1.0f);
-	// glVertex3f(-1.0f,-1.0f,-1.0f);
-	// glVertex3f(1.0f,-1.0f,-1.0f);
-	// glColor3f(0.5f,0.35f,0.05f);//FRONT
-	// glVertex3f(1.0f,1.0f,0.0f);
-	// glVertex3f(-1.0f,1.0f,0.0f);
-	// glVertex3f(-1.0f,-1.0f,0.0f);
-	// glVertex3f(1.0f,-1.0f,0.0f);
-	// glColor3f(0.5f,0.35f,0.05f);//LEFT
-	// glVertex3f(-1.0f,1.0f,-1.0f);
-	// glVertex3f(-1.0f,1.0f,0.0f);
-	// glVertex3f(-1.0f,-1.0f,0.0f);
-	// glVertex3f(-1.0f,-1.0f,-1.0f);
-	// glColor3f(0.5f,0.35f,0.05f);//RIGHT
-	// glVertex3f(1.0f,1.0f,0.0f);
-	// glVertex3f(1.0f,1.0f,-1.0f);
-	// glVertex3f(1.0f,-1.0f,-1.0f);
-	// glVertex3f(1.0f,-1.0f,0.0f);
-	glEnd();
-	glBegin(GL_LINES);
-	glColor3f(0.0f,0.0f,0.0f);//BACK TOP
-	glVertex3f(1.0f,1.0f,-1.0f);
-	glVertex3f(-1.0f,1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,0.0f);//BACK BOTTOM
-	glVertex3f(-1.0f,-1.0f,-1.0f);
-	glVertex3f(1.0f,-1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,0.0f);//BACK LEFT
-	glVertex3f(-1.0f,1.0f,-1.0f);
-	glVertex3f(-1.0f,-1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,0.0f);//BACK RIGHT
-	glVertex3f(1.0f,1.0f,-1.0f);
-	glVertex3f(1.0f,-1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,0.0f);//FRONT TOP
-	glVertex3f(1.0f,1.0f,0.0f);
-	glVertex3f(-1.0f,1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//FRONT BOTTOM
-	glVertex3f(-1.0f,-1.0f,0.0f);
-	glVertex3f(1.0f,-1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//FRONT LEFT
-	glVertex3f(-1.0f,1.0f,0.0f);
-	glVertex3f(-1.0f,-1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//FRONT RIGHT
-	glVertex3f(1.0f,1.0f,0.0f);
-	glVertex3f(1.0f,-1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//TOP LEFT
-	glVertex3f(-1.0f,1.0f,0.0f); 
-	glVertex3f(-1.0f,1.0f,-1.0f);
-	glColor3f(0.0f,0.0f,0.0f);//BOTTOM LEFT
-	glVertex3f(-1.0f,-1.0f,-1.0f);
-	glVertex3f(-1.0f,-1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//TOP RIGHT
-	glVertex3f(1.0f,1.0f,-1.0f);
-	glVertex3f(1.0f,1.0f,0.0f);
-	glColor3f(0.0f,0.0f,0.0f);//BOTTOM RIGHT
-	glVertex3f(1.0f,-1.0f,0.0f);
-	glVertex3f(1.0f,-1.0f,-1.0f);
-	glEnd();
-}
 
 void drawSquare()
 {
@@ -133,7 +59,6 @@ void myDisplay(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	gluLookAt(cameraPos[0],cameraPos[1],cameraPos[2],cameraPos[0]+directionSight[0],cameraPos[1]+directionSight[1],cameraPos[2]+directionSight[2],upVec[0],upVec[1],upVec[2]);
-	// drawSquare();
 	drawSquare();
 	glutSwapBuffers();
 }
@@ -145,7 +70,7 @@ void myinit()
 	glClearDepth(1.0f);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
-	}
+}
 
 void update(int data)
 {
@@ -156,7 +81,7 @@ void update(int data)
 void processNormalKeys(unsigned char key, int x,int y)
 {
 	double sensitivityX=1.5f;
-	double sensitivityY=1.5f;
+	double sensitivityY=.15f;
 	// double sensitivityFOV=1.0f;
 	if(key==27)
 	{

@@ -2,4 +2,6 @@
 References:
 https://dl.acm.org/citation.cfm?id=507101
 
-g++ base.cpp -lGL -lGLU -lglut -lGLEW
+After sudo apt-get install libsoil-dev
+
+g++ base.cpp -lGL -lGLU -lglut -lGLEW -lSOIL
