@@ -26,47 +26,54 @@ glm::dvec3 upVec=glm::dvec3(0.0f,1.0f,0.0f);
 
 Shader shader;
 
+double fArray[64][64];
+
 GLuint texture;
 GLuint normal_texture;
+
+double fVal(double u,double v)
+{
+	int uTemp=round(64*u);
+	double uDTemp=64*u-uTemp;
+	int vTemp=round(64*v);
+	double vDTemp=64*v-vTemp;
+	double f00=fArray[uTemp][vTemp];
+	double f10=fArray[uTemp+1][vTemp];
+	double f01=fArray[uTemp][vTemp+1];
+	double f11=fArray[uTemp+1][vTemp+1];
+	double fu0=f00 + uDTemp*(f10-f00);
+	double fu1=f01 + uDTemp*(f11-f01);
+	double fVal=fu0+vDTemp*(fu1-fu0);
+	return fVal;
+}
 
 GLuint loadTextureRAW( const char * filename, int width, int height )  
 {  
 	GLuint texture;  
 	unsigned char * data;  
 	FILE * file;  
-	  
-	//The following code will read in our RAW file  
 	file = fopen( filename, "rb" );  
-	  
 	if ( file == NULL ) return 0;  
 	data = (unsigned char *)malloc( width * height * 3 );  
 	fread( data, width * height * 3, 1, file );  
-	  
-	fclose( file );  
-	  
-	glGenTextures( 1, &texture ); //generate the texture with the loaded data  
-	glBindTexture( GL_TEXTURE_2D, texture ); //bind the texture to it’s array  
-	  
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); //set texture environment parameters  
-	  
-	//And if you go and use extensions, you can use Anisotropic filtering textures which are of an  
-	//even better quality, but this will do for now.  
+	fclose( file );    
+	glGenTextures( 1, &texture ); 
+	glBindTexture( GL_TEXTURE_2D, texture );
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  
-	  
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
-	  
-	//Here we are setting the parameter to repeat the texture instead of clamping the texture  
-	//to the edge of our shape.  
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);    
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );  
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );  
-	  
-	//Generate the texture  
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );    
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);  
-	  
-	free( data ); //free the texture  
-	  
-	return texture; //return whether it was successfull  
+	free( data );
+	return texture; 
 }  
+
+GLuint loadTextureSOIL( const char * filename)  
+{
+	GLuint texture= SOIL_load_OGL_texture(filename,SOIL_LOAD_AUTO,SOIL_CREATE_NEW_ID,SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+	return texture;
+}
 
 void FreeTexture( GLuint texture )  
 {  
@@ -116,32 +123,18 @@ void drawSquare2D()
 
 void drawSquare()
 {
-	// glActiveTexture(GL_TEXTURE0);
-	// glEnable(GL_TEXTURE_2D);
-	// int texture_location = glGetUniformLocation
 	glBegin(GL_TRIANGLES);
 	glColor3f(0.196, 0.6, 0.8);
-	glTexCoord2f(1.0f,1.0f);
 	glVertex3f(1.0f,1.0f,0.0f);
-	glTexCoord2f(0.0f,0.0f);
 	glVertex3f(-1.0f,-1.0f,0.0f);
-	glTexCoord2f(0.0f,1.0f);
 	glVertex3f(-1.0f,1.0f,0.0f);
 	glColor3f(0.196, 0.6, 0.8);
-	glTexCoord2f(1.0f,1.0f);
 	glVertex3f(1.0f,1.0f,0.0f);
-	glTexCoord2f(0.0f,0.0f);
 	glVertex3f(-1.0f,-1.0f,0.0f);
-	glTexCoord2f(1.0f,0.0f);
 	glVertex3f(1.0f,-1.0f,0.0f);
 	glEnd();
 }
 
-void drawTeapot()
-{
-	glColor3f(0.196, 0.6, 0.8);
-	glutWireTeapot(1);
-}
 void changeSize(int w, int h) 
 {
 	if (h == 0)
@@ -162,6 +155,7 @@ void myDisplay(void) {
 	glRotatef(rotate_x,0.0f,1.0f,0.0f);
 	glRotatef(rotate_y,1.0f,0.0f,0.0f);
 	shader.bind();
+	// drawSquare();
 	drawSquare2D();
 	shader.unbind();
 	glRotatef(-1*rotate_x,1.0f,0.0f,0.0f);
@@ -178,8 +172,15 @@ void myinit()
 	glDepthFunc(GL_LEQUAL);
     glewInit();
     shader.init("shader.vert", "shader.frag");  
-	texture = loadTextureRAW("colour_map.raw", 256, 256);  
-	normal_texture = loadTextureRAW("normal_map.raw", 256, 256); 
+	// texture = loadTextureSOIL("brickwall.jpg");
+    normal_texture=loadTextureSOIL("16_face.png");
+    // normal_texture=loadTextureSOIL("J3QeZ.png");
+	// normal_texture=loadTextureSOIL("8ckF1.jpg");
+	// normal_texture=loadTextureSOIL("dotted-leather-normal-map_300x300.jpg");
+	// normal_texture=loadTextureSOIL("normal-map.jpg");
+	// normal_texture=loadTextureSOIL("normal_mapping_normal_map.png");
+	texture = loadTextureRAW("colour_map.raw", 256, 256);
+	// normal_texture = loadTextureRAW("normal_map.raw", 256, 256); 
   }
 
 void update(int data)
@@ -276,6 +277,14 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc(processSpecialKeys);
 	glutTimerFunc(30,update,0);
+	for(int i=0;i<64;i++)
+	{
+		for(int j=0;j<64;j++)
+		{
+			fArray[i][j]=((double)rand()/(double)(RAND_MAX));
+			// cout<<fArray[i][j];
+		}
+	}
 	myinit();
 	glutMainLoop();
 	return 1;

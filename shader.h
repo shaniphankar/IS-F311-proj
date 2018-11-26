@@ -1,6 +1,6 @@
 #ifndef __SHADER_H
 #define __SHADER_H
-
+#include <stdio.h>
 #include <string>
 #include <stdlib.h>
 #include <GL/glew.h>

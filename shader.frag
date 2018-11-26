@@ -5,7 +5,7 @@ void main() {
     vec3 normal = normalize(texture2D(normal_texture, gl_TexCoord[0].st).rgb * 2.0 - 1.0);  
       
     // Determine where the light is positioned (this can be set however you like)  
-    vec3 light_pos = normalize(vec3(1.0, 1.0, 1.5));  
+    vec3 light_pos = normalize(vec3(1.0, 1.0, 1.0));  
       
     // Calculate the lighting diffuse value  
     float diffuse = max(dot(normal, light_pos), 0.0);  
