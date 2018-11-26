@@ -89,6 +89,9 @@ void Shader::init(const char *vsFile, const char *fsFile) {
 	shader_id = glCreateProgram();
 	glAttachShader(shader_id, shader_fp);
 	glAttachShader(shader_id, shader_vp);
+	glBindAttribLocation(shader_id,0,"aPos");
+	glBindAttribLocation(shader_id,0,"aColor");
+	glBindAttribLocation(shader_id,0,"aTexCoord");
 	glLinkProgram(shader_id);
 	validateProgram(shader_id);
 }

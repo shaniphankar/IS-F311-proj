@@ -55,6 +55,7 @@ GLuint loadTextureRAW( const char * filename, int width, int height )
 	file = fopen( filename, "rb" );  
 	if ( file == NULL ) return 0;  
 	data = (unsigned char *)malloc( width * height * 3 );  
+	cout<<data;
 	fread( data, width * height * 3, 1, file );  
 	fclose( file );    
 	glGenTextures( 1, &texture ); 
@@ -172,14 +173,14 @@ void myinit()
 	glDepthFunc(GL_LEQUAL);
     glewInit();
     shader.init("shader.vert", "shader.frag");  
-	// texture = loadTextureSOIL("brickwall.jpg");
-    normal_texture=loadTextureSOIL("16_face.png");
+	texture = loadTextureSOIL("wbs_texture_04.jpg");
+    // normal_texture=loadTextureSOIL("16_face.png");
     // normal_texture=loadTextureSOIL("J3QeZ.png");
 	// normal_texture=loadTextureSOIL("8ckF1.jpg");
 	// normal_texture=loadTextureSOIL("dotted-leather-normal-map_300x300.jpg");
 	// normal_texture=loadTextureSOIL("normal-map.jpg");
-	// normal_texture=loadTextureSOIL("normal_mapping_normal_map.png");
-	texture = loadTextureRAW("colour_map.raw", 256, 256);
+	normal_texture=loadTextureSOIL("normal_mapping_normal_map.png");
+	// texture = loadTextureRAW("colour_map.raw", 256, 256);
 	// normal_texture = loadTextureRAW("normal_map.raw", 256, 256); 
   }
 
