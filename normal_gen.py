@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 import pprint
 pp=pprint.PrettyPrinter(4)
-file="wbs_texture_02.jpg"
+file="1102_d.jpg"
 img=Image.open(file)
 img=img.convert("L")
 img_arr=np.zeros(shape=(img.width,img.height))
@@ -10,7 +10,7 @@ s=np.zeros(3)
 t=np.zeros(3)
 s[0]=1
 t[1]=1
-N=np.zeros(shape=(img.width,img.height,3))
+N=np.zeros(shape=(img.height,img.width,3))
 for x in range(img.width):
 	for y in range(img.height):
 		img_arr[x][y]=img.getpixel((x,y))/255

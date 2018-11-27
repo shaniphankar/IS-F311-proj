@@ -3,7 +3,7 @@ uniform sampler2D normal_texture;
 void main() {  
     vec3 normal = normalize(texture2D(normal_texture, gl_TexCoord[0].st).rgb * 2.0 - 1.0);  
       
-    vec3 light_pos = normalize(vec3(20.0, 20.0, 10.0));  
+    vec3 light_pos = normalize(vec3(20.0, 20.0, 20.0));  
       
     float diffuse = max(dot(normal, light_pos), 0.0);  
       
