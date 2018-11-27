@@ -173,13 +173,13 @@ void myinit()
 	glDepthFunc(GL_LEQUAL);
     glewInit();
     shader.init("shader.vert", "shader.frag");  
-	texture = loadTextureSOIL("wbs_texture_04.jpg");
+	texture = loadTextureSOIL("wbs_texture_02.jpg");
     // normal_texture=loadTextureSOIL("16_face.png");
     // normal_texture=loadTextureSOIL("J3QeZ.png");
 	// normal_texture=loadTextureSOIL("8ckF1.jpg");
 	// normal_texture=loadTextureSOIL("dotted-leather-normal-map_300x300.jpg");
 	// normal_texture=loadTextureSOIL("normal-map.jpg");
-	normal_texture=loadTextureSOIL("normal_mapping_normal_map.png");
+	normal_texture=loadTextureSOIL("normal wbs_texture_02.jpg");
 	// texture = loadTextureRAW("colour_map.raw", 256, 256);
 	// normal_texture = loadTextureRAW("normal_map.raw", 256, 256); 
   }
@@ -286,6 +286,7 @@ int main(int argc, char **argv)
 			// cout<<fArray[i][j];
 		}
 	}
+	
 	myinit();
 	glutMainLoop();
 	return 1;
