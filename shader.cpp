@@ -6,6 +6,12 @@
 
 using namespace std;
 
+/*! This function reads the textfile given. In our case, these are the vertex and fragment shaders. 
+\param filename Contains name of the image to be loaded
+\param width Width of the image
+\param height Height of the Image
+\return The texture which the input image has been bound.
+*/
 static char* textFileRead(const char *fileName) {
 	char* text;
     
@@ -28,44 +34,25 @@ static char* textFileRead(const char *fileName) {
 	return text;
 }
 
-static void validateShader(GLuint shader, const char* file = 0) {
-	const unsigned int BUFFER_SIZE = 512;
-	char buffer[BUFFER_SIZE];
-	memset(buffer, 0, BUFFER_SIZE);
-	GLsizei length = 0;
-    
-	glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
-	if (length > 0) {
-		cout << "Shader " << shader << " (" << (file?file:"") << ") compile error: " << buffer << endl;
-	}
-}
-
-static void validateProgram(GLuint program) {
-	const unsigned int BUFFER_SIZE = 512;
-	char buffer[BUFFER_SIZE];
-	memset(buffer, 0, BUFFER_SIZE);
-	GLsizei length = 0;
-    
-	memset(buffer, 0, BUFFER_SIZE);
-	glGetProgramInfoLog(program, BUFFER_SIZE, &length, buffer);
-	if (length > 0)
-		cout << "Program " << program << " link error: " << buffer << endl;
-    
-	glValidateProgram(program);
-	GLint status;
-	glGetProgramiv(program, GL_VALIDATE_STATUS, &status);
-	if (status == GL_FALSE)
-		cout << "Error validating shader " << program << endl;
-}
-
+/*! Constructor for our Shader object. Doesn't do anything since we never made use of empty call to shader.
+*/
 Shader::Shader() {
     
 }
 
+/*! Constructor for our Shader Object.
+\param vsFile Contains path to vertex shader
+\param fsFile Contains path to fragment shader
+\return The texture which the input image has been bound.
+*/
 Shader::Shader(const char *vsFile, const char *fsFile) {
     init(vsFile, fsFile);
 }
 
+/*! Initializes our shader using the given vertex and fragment shader.
+\param vsFile Contains path to vertex shader
+\param fsFile Contains path to fragment shader
+*/
 void Shader::init(const char *vsFile, const char *fsFile) {
 	shader_vp = glCreateShader(GL_VERTEX_SHADER);
 	shader_fp = glCreateShader(GL_FRAGMENT_SHADER);
@@ -82,37 +69,37 @@ void Shader::init(const char *vsFile, const char *fsFile) {
 	glShaderSource(shader_fp, 1, &fsText, 0);
     
 	glCompileShader(shader_vp);
-	validateShader(shader_vp, vsFile);
 	glCompileShader(shader_fp);
-	validateShader(shader_fp, fsFile);
-    
+
 	shader_id = glCreateProgram();
 	glAttachShader(shader_id, shader_fp);
 	glAttachShader(shader_id, shader_vp);
-	glBindAttribLocation(shader_id,0,"aPos");
-	glBindAttribLocation(shader_id,0,"aColor");
-	glBindAttribLocation(shader_id,0,"aTexCoord");
 	glLinkProgram(shader_id);
-	validateProgram(shader_id);
 }
 
+/*! Destructor for our Shader Object. 
+*/
 Shader::~Shader() {
 	glDetachShader(shader_id, shader_fp);
 	glDetachShader(shader_id, shader_vp);
-    
 	glDeleteShader(shader_fp);
 	glDeleteShader(shader_vp);
 	glDeleteProgram(shader_id);
 }
 
+/*! Getter function that returns id of Shader object currently in use.
+*/
 unsigned int Shader::id() {
 	return shader_id;
 }
 
+/*! On calling this, the shader takes effect in our scene.
+*/
 void Shader::bind() {
 	glUseProgram(shader_id);
 }
-
+/*! On calling this, the shader loses effect in our scene.
+*/
 void Shader::unbind() {
 	glUseProgram(0);
 }

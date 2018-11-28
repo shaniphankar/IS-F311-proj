@@ -24,29 +24,21 @@ glm::dvec3 directionSight=glm::dvec3(0.0f,0.0f,-1.0f);
 //! 3D vector that contains the direction that defines what direction is UP
 glm::dvec3 upVec=glm::dvec3(0.0f,1.0f,0.0f);
 
+//! Initializes a shader object using the user-defined class Shader
 Shader shader;
 
-double fArray[64][64];
-
+//! Intializing the texture that is bound to the square
 GLuint texture;
+//! Intializing the normal texture. This provides us with the displacement to the normal vector at each pixel.
 GLuint normal_texture;
 
-double fVal(double u,double v)
-{
-	int uTemp=round(64*u);
-	double uDTemp=64*u-uTemp;
-	int vTemp=round(64*v);
-	double vDTemp=64*v-vTemp;
-	double f00=fArray[uTemp][vTemp];
-	double f10=fArray[uTemp+1][vTemp];
-	double f01=fArray[uTemp][vTemp+1];
-	double f11=fArray[uTemp+1][vTemp+1];
-	double fu0=f00 + uDTemp*(f10-f00);
-	double fu1=f01 + uDTemp*(f11-f01);
-	double fVal=fu0+vDTemp*(fu1-fu0);
-	return fVal;
-}
 
+/*! This function loads textures of the format .RAW. 
+\param filename Contains name of the image to be loaded
+\param width Width of the image
+\param height Height of the Image
+\return The texture which the input image has been bound.
+*/
 GLuint loadTextureRAW( const char * filename, int width, int height )  
 {  
 	GLuint texture;  
@@ -55,7 +47,7 @@ GLuint loadTextureRAW( const char * filename, int width, int height )
 	file = fopen( filename, "rb" );  
 	if ( file == NULL ) return 0;  
 	data = (unsigned char *)malloc( width * height * 3 );  
-	cout<<data;
+	// cout<<data;
 	fread( data, width * height * 3, 1, file );  
 	fclose( file );    
 	glGenTextures( 1, &texture ); 
@@ -70,16 +62,27 @@ GLuint loadTextureRAW( const char * filename, int width, int height )
 	return texture; 
 }  
 
+/*! This function makes use of Simple OpenGL Image Loader library to load images as textures. 
+\param filename Contains name of the image to be loaded
+\return The texture which the input image has been bound.
+*/
+
 GLuint loadTextureSOIL( const char * filename)  
 {
 	GLuint texture= SOIL_load_OGL_texture(filename,SOIL_LOAD_AUTO,SOIL_CREATE_NEW_ID,SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 	return texture;
 }
 
+/*! This function detaches the texture that has is currenlty bound in the variable texture. 
+\param texture The texture that is currently bound
+*/
 void FreeTexture( GLuint texture )  
 {  
 	glDeleteTextures( 1, &texture );  
 }  
+
+/*! This function draws a simple square using GL_Triangles. The square is in X-Y plane and is centered on (0,0,0). After drawing, the two textures are also bound to the square.
+*/
 
 void drawSquare2D()
 {
@@ -122,6 +125,8 @@ void drawSquare2D()
 	glDisable(GL_TEXTURE_2D); 
 }
 
+/*! This function draws a simple square using GL_Triangles. The square is in X-Y plane and is centered on (0,0,0). After drawing, no texture is bound to the square.
+*/
 void drawSquare()
 {
 	glBegin(GL_TRIANGLES);
@@ -136,6 +141,11 @@ void drawSquare()
 	glEnd();
 }
 
+
+/*! The function that we register as OpenGL's reshape function.
+param w Contains the width of the window
+param h Contains the height of the window
+*/
 void changeSize(int w, int h) 
 {
 	if (h == 0)
@@ -148,11 +158,15 @@ void changeSize(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+
+/*! The function that we register as OpenGL's display function. In this function, the entire shading pipeline is executed.
+*/
 void myDisplay(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	gluLookAt(cameraPos[0],cameraPos[1],cameraPos[2],cameraPos[0]+directionSight[0],cameraPos[1]+directionSight[1],cameraPos[2]+directionSight[2],upVec[0],upVec[1],upVec[2]);
+	clock_t begin= clock();
 	glRotatef(rotate_x,0.0f,1.0f,0.0f);
 	glRotatef(rotate_y,1.0f,0.0f,0.0f);
 	shader.bind();
@@ -161,9 +175,13 @@ void myDisplay(void) {
 	shader.unbind();
 	glRotatef(-1*rotate_x,1.0f,0.0f,0.0f);
 	glRotatef(-1*rotate_y,0.0f,1.0f,0.0f);
+	clock_t end = clock();
+	cout<< double(end-begin)/CLOCKS_PER_SEC<<endl;
 	glutSwapBuffers();
 }
 
+/*! The function that we use to give initial values to our OpenGL instance. We also use this to bind our chosen images as textures to the corresponding variables.
+*/
 void myinit()
 {
 	glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -173,23 +191,33 @@ void myinit()
 	glDepthFunc(GL_LEQUAL);
     glewInit();
     shader.init("shader.vert", "shader.frag");  
-	texture = loadTextureSOIL("wbs_texture_04.jpg");
+	texture = loadTextureSOIL("wbs_texture_01.jpg");
     // normal_texture=loadTextureSOIL("16_face.png");
     // normal_texture=loadTextureSOIL("J3QeZ.png");
 	// normal_texture=loadTextureSOIL("8ckF1.jpg");
 	// normal_texture=loadTextureSOIL("dotted-leather-normal-map_300x300.jpg");
 	// normal_texture=loadTextureSOIL("normal-map.jpg");
-	normal_texture=loadTextureSOIL("normal 1102_d.jpg");
+	// normal_texture=loadTextureSOIL("normal_mapping_normal_map.png");
+	normal_texture=loadTextureSOIL("normal wbs_texture_08.jpg");
 	// texture = loadTextureRAW("colour_map.raw", 256, 256);
 	// normal_texture = loadTextureRAW("normal_map.raw", 256, 256); 
   }
 
+
+/*! The function that we register as OpenGL's reshape function.
+param data Integer Unused in this instance
+*/
 void update(int data)
 {
 	glutTimerFunc(30,update,0);
 	glutPostRedisplay();
 }
 
+/*! This function details how to process all the keys for which ASCII values exist
+\param key The key that has been pressed.
+\param x Integer parameter
+\param y Integer parameter
+*/
 void processNormalKeys(unsigned char key, int x,int y)
 {
 	double sensitivityX=3.0f;
@@ -245,7 +273,11 @@ void processNormalKeys(unsigned char key, int x,int y)
 	tempDir[2]=sin(glm::radians(yaw))*cos(glm::radians(pitch));
 	directionSight=glm::normalize(tempDir);
 }
-
+/*! This function details how to process all the keys for which ASCII values do not exist
+\param key The key that has been pressed.
+\param x Integer parameter
+\param y Integer parameter
+*/
 void processSpecialKeys(int key, int x,int y)
 {
 	double fraction=0.1f;
@@ -278,15 +310,6 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(processNormalKeys);
 	glutSpecialFunc(processSpecialKeys);
 	glutTimerFunc(30,update,0);
-	for(int i=0;i<64;i++)
-	{
-		for(int j=0;j<64;j++)
-		{
-			fArray[i][j]=((double)rand()/(double)(RAND_MAX));
-			// cout<<fArray[i][j];
-		}
-	}
-	
 	myinit();
 	glutMainLoop();
 	return 1;
